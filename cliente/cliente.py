@@ -22,8 +22,17 @@ try:
     match request:
         case "ESCRITURA":
             message = f"{request}".encode()
-            udp.sendto(message, host_port)
-            msg, (add, port) = udp.recvfrom(1024)
+            for _ in range(5):  # Realizar el envío y recepción hasta 5 veces
+                udp.sendto(message, host_port)
+                try:
+                    msg, (add, port) = udp.recvfrom(1024)
+                    break  # Si se recibe la respuesta, salir del bucle
+                except socket.timeout:
+                    print("Timeout (5 seg): servidor no responde...\nreintentando")
+            else:
+                # Si el bucle se ejecuta completamente sin salir, es decir, después de 5 intentos sin éxito
+                print("Error: No se pudo establecer la conexión después de 5 intentos.")
+                sys.exit()
             port = int(msg.decode())
             tcp.connect((host, port))
             print("Solicitud de escritura de usuario aceptada")
