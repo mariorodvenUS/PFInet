@@ -5,7 +5,7 @@ if len(sys.argv) != 4:
     print("Uso: python cliente.py CONSULTA|ESCRITURA <USUARIO> <IP>")
     sys.exit(1)
 
-request = sys.argv[1]
+request = sys.argv[1].upper()
 user = sys.argv[2]
 host = sys.argv[3]
 host_port = (host, 59004)
@@ -17,7 +17,7 @@ try:
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error as e:
     print(f"Error al crear socket: {e}")
-    sys.exit(1)
+    sys.exit()
 
 try:
     match request:
@@ -48,8 +48,18 @@ try:
         case "CONSULTA":
             message = f"{request}-{user}".encode()
             print(f"Consultando si existe el usuario {user}...")
-            udp.sendto(message, host_port)
-            msg, (add, port) = udp.recvfrom(1024)
+            # Realizar el envío y recepción hasta 5 veces
+            for _ in range(5):  
+                udp.sendto(message, host_port)
+                try:
+                    msg, (add, port) = udp.recvfrom(1024)
+                    break  # Si se recibe la respuesta, salir del bucle
+                except socket.timeout:
+                    print("Timeout (5 seg): servidor no responde...\nreintentando")
+            else:
+                # Si el bucle se ejecuta completamente sin salir, es decir, después de 5 intentos sin éxito
+                print("Error: No se pudo establecer la conexión después de 5 intentos.")
+                sys.exit()
             print(f"El usuario {user} {msg.decode()} existe en la base de datos")
         case _:
             print(f"Error, '{request}' no es una operacion valida")

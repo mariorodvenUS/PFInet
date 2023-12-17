@@ -1,0 +1,18 @@
+Descripcion del codigo del cliente:
+
+Se importan los modulos socket y sys, necesarios para crear sockets TCP y UDP ademas de
+cerrar el programa en caso de error como por ejemplo en la linea 20.
+
+Primero se comprueba que el numero de argumentos es el correcto y a continuacion se asigna una variable
+con un nombre autoexplicativo a cada argumento
+
+Usando un try-catch creamos tanto un socket tcp como uno udp, ademas de ponerle un timeout de 5 segundos
+al socket udp. Definimos un mensaje de error en caso de que surja alguno en la creacion de los sockets
+
+Usando de nuevo un try-catch usamos la estructura match(equivalente a un switch de C, introducida en la version 3.10 de Python)
+comprobamos si tenemos que hacer una consulta o una escritura. Usando una cadena formateada creamos la solicitus y la 
+mandamos con el socket udp al puerto designado, usando un for nos aseguramos de mandarlo 4 veces mas en caso 
+de no recibir nada la anterior vez. Si no recibe nada salta al else del fondo.
+Si es escritura, haciendo uso de el socket tcp manda el nombre. Si es consulta se limita a 
+ver si ha recibido un SI o un NO.
+Por último se cierran los sockets.

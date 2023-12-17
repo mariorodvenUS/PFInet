@@ -1,0 +1,115 @@
+Pruebas de ejecucion del cliente.
+
+1.Consulta de un usuario NO existente en la base de datos
+
+dit@localhost:~/PFInet/cliente$ python3 cliente.py CONSULTA mario 127.0.0.1
+Consultando si existe el usuario mario...
+El usuario mario NO existe en la base de datos
+
+2.Consulta de un usuario que SI existe en la base de datos
+
+dit@localhost:~/PFInet/cliente$ python3 cliente.py CONSULTA pepe 127.0.0.1
+Consultando si existe el usuario pepe...
+El usuario pepe SI existe en la base de datos
+
+3.Escritura de un usuario
+
+dit@localhost:~/PFInet/cliente$ python3 cliente.py ESCRITURA mario 127.0.0.1
+Solicitud de escritura de usuario aceptada
+El servidor ha confirmado la escritura de 5 caracteres
+Cerrando socket TCP...
+
+4. Consulta de un usuario con el servidor caido
+
+dit@localhost:~/PFInet/cliente$ python3 cliente.py CONSULTA mario 127.0.0.1
+Consultando si existe el usuario mario...
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Error: No se pudo establecer la conexión después de 5 intentos.
+
+5. Escritura de un usuario con el servidor caido
+
+dit@localhost:~/PFInet/cliente$ python3 cliente.py ESCRITURA mario 127.0.0.1
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Error: No se pudo establecer la conexión después de 5 intentos.
+
+6. Consulta de un usuario con el archivo de usuarios.txt borrado
+
+Del lado del cliente:
+dit@localhost:~/PFInet/cliente$ python3 cliente.py CONSULTA mario 127.0.0.1
+Consultando si existe el usuario mario...
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Timeout (5 seg): servidor no responde...
+reintentando
+Error: No se pudo establecer la conexión después de 5 intentos.
+
+Y del lado del servidor:
+Esperando solicitudes en puerto UDP 59004
+Petición de consulta recibida desde ('127.0.0.1', 50548)
+Enviando respuesta al cliente...
+No se puede abrir / no existe  usuarios.txt
+
+7. Escritura de un usuario con el archivo usuarios.txt borrado:
+
+Del lado del cliente:
+dit@localhost:~/PFInet/cliente$ python3 cliente.py ESCRITURA mario 127.0.0.1
+Solicitud de escritura de usuario aceptada
+El servidor ha confirmado la escritura de 5 caracteres
+Cerrando socket TCP...
+
+Del lado del servidor:
+╭─dit@localhost ~/PFInet/servidor ‹main●› 
+╰─$ python3 servidor.py                                                     1 ↵
+Esperando solicitudes en puerto UDP 59004
+Petición de escritura recibida
+Esperando recepción de usuario en puerto TCP 61117
+Conexión con ('127.0.0.1', 56834)
+Se ha añadido el usuario mario
+Cerrando sockets creados...
+Esperando solicitudes en puerto UDP 59004
+
+8. Argumentos incorrectos
+
+Personalmente he optado por añadir un .upper() a los argumentos, permitiendo que se escriban los caracteres en minuscula, las ejecuciones se ven de la siguiente forma:
+
+-consulta en minusculas
+dit@localhost:~/PFInet/cliente$ python3 cliente.py consulta mario 127.0.0.1
+Consultando si existe el usuario mario...
+El usuario mario SI existe en la base de datos
+
+-consulta con algun caracter con mayusculas o minusculas
+dit@localhost:~/PFInet/cliente$ python3 cliente.py coNsulTa mario 127.0.0.1
+Consultando si existe el usuario mario...
+El usuario mario SI existe en la base de datos
+
+-operaciones mal escritas
+dit@localhost:~/PFInet/cliente$ python3 cliente.py coNsulT mario 127.0.0.1
+Error, 'CONSULT' no es una operacion valida
+
+dit@localhost:~/PFInet/cliente$ python3 cliente.py ESCRITUR mario 127.0.0.1
+Error, 'ESCRITUR' no es una operacion valida
+
