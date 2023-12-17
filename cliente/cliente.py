@@ -10,6 +10,7 @@ user = sys.argv[2]
 host = sys.argv[3]
 host_port = (host, 59004)
 
+#Creamos los sockets
 try:
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp.settimeout(5)
@@ -22,7 +23,8 @@ try:
     match request:
         case "ESCRITURA":
             message = f"{request}".encode()
-            for _ in range(5):  # Realizar el envío y recepción hasta 5 veces
+            # Realizar el envío y recepción hasta 5 veces
+            for _ in range(5):  
                 udp.sendto(message, host_port)
                 try:
                     msg, (add, port) = udp.recvfrom(1024)
@@ -33,6 +35,7 @@ try:
                 # Si el bucle se ejecuta completamente sin salir, es decir, después de 5 intentos sin éxito
                 print("Error: No se pudo establecer la conexión después de 5 intentos.")
                 sys.exit()
+                
             port = int(msg.decode())
             tcp.connect((host, port))
             print("Solicitud de escritura de usuario aceptada")
